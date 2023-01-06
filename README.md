@@ -6,7 +6,7 @@ What is Cw3racl?
 Cw3racl is common web3 rpc access client by lisp; Applicable to all evm compatible blockchains.
 
 
-How to Installed?
+How to Install?
 ----------------
 
 
