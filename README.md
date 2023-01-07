@@ -8,7 +8,9 @@ Cw3racl is common web3 rpc access client by lisp; Applicable to all evm compatib
 
 How to Install?
 ----------------
-
+    apt-get install libcurl4-gnutls-dev
+    pushd ./DependLibs
+    bash CreateLib.sh
 
 How to use?
 -----------
