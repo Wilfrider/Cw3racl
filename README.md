@@ -1,5 +1,3 @@
-[web3-cl](https://github.com/Wilfrider/cl-web3.git).
-
 # What is cl-web3?
 
 
@@ -23,4 +21,4 @@ MIT.
 
 ## Documentation
 
-[refs](https://github.com/Wilfrider/cl-web3/wiki)
+[sourceCode](https://github.com/Wilfrider/cl-web3.git).

@@ -1,5 +1,5 @@
-#include <boost/filesystem.hpp>
-namespace Wufs = boost::filesystem;
+#include <cstdlib>
+#include <string.h>
 
 #include <stdio.h>
 #include <curl/curl.h>
@@ -45,7 +45,7 @@ struct curlWrap_OutStt{
         goto exitt; \
     }
 
-int curlWrapImpl(const char* reqUrl, const char* proxy, int cnTimeout, int tcpNoDelay, const char* pHeaders, const unsigned char* postFields, int postLen, struct curlWrap_OutStt* pOutStt) {
+int curl_Wrap(const char* reqUrl, const char* proxy, int cnTimeout, int tcpNoDelay, const char* pHeaders, const unsigned char* postFields, int postLen, struct curlWrap_OutStt* pOutStt) {
     CURL *curl;
     CURLcode res;
     int FunRet = 0;
