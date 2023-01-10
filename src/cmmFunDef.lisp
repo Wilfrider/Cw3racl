@@ -43,4 +43,10 @@
 
 
 (defmacro wtLogInfo (&body body) `(gvLogOut gLogLevel-Info ,@body))
-;; (wtLogInfo "ttt")
+;; (wtLogInfo "this is a test")
+
+
+(defun keccak256Hash (inputAry &key)
+  (let ((retArray (make-array `,(length inputAry) :element-type '(unsigned-byte 8) :initial-contents `,inputAry)) (digester (ironclad:make-digest :keccak/256)))
+    (ironclad:update-digest digester retArray)
+    (ironclad:produce-digest digester)))
