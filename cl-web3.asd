@@ -6,7 +6,7 @@
   :components ((:static-file "cl-web3.asd")
                (:module :src
                         :components ((:file "package")
-                                     (:file "BaseVarDef")
+                                     (:file "ConstantDef")
                                      (:file "cmmFunDef")
                                      (:file "globalVarDef")
                                      (:file "web3FunDef"))))

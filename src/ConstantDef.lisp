@@ -3,8 +3,6 @@
 (uffi:def-enum gLogLevel ((:Debug 0) :Info :Key :Warn :Error) :separator-string "-")
 (defparameter *gcur-LogLevel* gLogLevel-Debug)
 
-(defparameter gCurUsrHomeDir (sb-unix:uid-homedir (sb-unix:unix-getuid)))
-
 (defparameter gTimestampOffset (* 3600 8))
 
 (defparameter gBalancerSubgraphBaseUrl "https://api.thegraph.com/subgraphs/name/balancer-labs")

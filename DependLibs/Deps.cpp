@@ -30,6 +30,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
 }
 
 extern "C" {
+void FreeMallocPoint(void* p){if(p) free(p);}
 
 struct curlWrap_OutStt{
     unsigned char * pHeader;

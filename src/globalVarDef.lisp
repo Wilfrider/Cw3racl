@@ -38,7 +38,6 @@
 (defparameter METHODID-UNISWAP-PairToken1 (CreateMethodId-n0x "token1()"))
 (defparameter METHODID-querySwapByBalancer (CreateMethodId "querySwapByBalancer(uint256[])"))
 
-
 (defclass ChainPrc ()
   ((AccountAddr :initarg :AccountAddr :accessor AccountAddr)
    (MultiCallAdr :initarg :MultiCallAdr :accessor MultiCallAdr)
