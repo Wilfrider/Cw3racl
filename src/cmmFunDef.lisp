@@ -89,5 +89,21 @@
         (FreeMallocPoint pHeader)
         (FreeMallocPoint pBody)
         (return-from htppClientAccess retVal))
-    (error (cond) (progn (wtLogWarn "url:~a, AcsErrInfo:~a" reqUrl cond) (return-from htppClientAccess nil))))
+    (error (cond) (progn (wtLogWarn "url:~a, access ErrInfo:~a" reqUrl cond) (return-from htppClientAccess nil))))
+  nil)
+
+(defun httpGetImpl (reqUrl  &key (LoclaProxy nil) (localReqHead "avt<|>") (retBodyIsStr t))
+  (let ((retTStamp  (htppClientAccess reqUrl :proxy LoclaProxy :reqHeaders localReqHead :retBodyIsStr retBodyIsStr)))
+    (if (and retTStamp (= 200  (car retTStamp)))
+        (return-from httpGetImpl (third retTStamp)))
+    nil))
+
+(defmacro inline-FullStrTo64bytesAtFront (str &key (headStr "")) `(concatenate 'string ,headStr (make-string (- 64 (length ,str)) :initial-element #\0) ,str))
+(defmacro inline-FullStrTo64bytesAtEnd (str) `(concatenate 'string  ,str (make-string (- 64 (length ,str)) :initial-element #\0)))
+
+(defun inline-Addrp (TstVal)
+  (when  (and (stringp TstVal) (= 40 (length TstVal)))
+    (let ((curPos 0) curChr)
+      (loop while (< curPos 40) do (setf curChr (elt TstVal curPos)) (if (or (char< #\/ curChr #\:) (char< #\` curChr #\g) (char< #\@ curChr #\G)) (incf curPos) (return)))
+      (if (/= curPos 40) (return-from inline-Addrp nil) (return-from inline-Addrp t))))
   nil)
