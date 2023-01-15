@@ -107,3 +107,22 @@
       (loop while (< curPos 40) do (setf curChr (elt TstVal curPos)) (if (or (char< #\/ curChr #\:) (char< #\` curChr #\g) (char< #\@ curChr #\G)) (incf curPos) (return)))
       (if (/= curPos 40) (return-from inline-Addrp nil) (return-from inline-Addrp t))))
   nil)
+
+(defun inline-AlingnSndVal (strSndVal Decimals)
+  (let (CheCnt (bFloat (position #\. strSndVal)))
+    (if bFloat (setf CheCnt (- Decimals (- (length strSndVal) 1 bFloat)) strSndVal (concatenate 'string (subseq strSndVal 0 bFloat) (subseq strSndVal (+ 1 bFloat)))) (setf CheCnt Decimals))
+
+    (setf strSndVal (parse-integer strSndVal))
+    (setf strSndVal (* strSndVal (expt 10 CheCnt)))
+    strSndVal))
+
+(defun inline-AlingnSndFloatVal (FloatSndVal Decimals) (inline-AlingnSndVal (format nil "~f" FloatSndVal) Decimals))
+
+(defun inline-ConvertSndValToVector (strSndVal Decimals)
+  (ironclad:integer-to-octets (inline-AlingnSndVal strSndVal Decimals)))
+
+
+(defun inline-encodeLength (len offset)
+  (if (< len 56)
+      (make-array 1 :element-type '(unsigned-byte 8) :initial-contents `#(,(+ len offset)))
+      (concatenate 'SIMPLE-VECTOR  (ironclad:integer-to-octets (+ (round (/ (length (format nil "~x" len)) 2)) 55 offset)) (ironclad:integer-to-octets len))))
