@@ -126,3 +126,27 @@
   (if (< len 56)
       (make-array 1 :element-type '(unsigned-byte 8) :initial-contents `#(,(+ len offset)))
       (concatenate 'SIMPLE-VECTOR  (ironclad:integer-to-octets (+ (round (/ (length (format nil "~x" len)) 2)) 55 offset)) (ironclad:integer-to-octets len))))
+
+(defun inline-rlp-encode (arraysList &key)
+  (let ((retArray (make-array 0 :element-type '(unsigned-byte 8) :adjustable t)) (tmpArys nil) (ttLen 0) ttLenAry)
+    (dolist (curAry arraysList)
+      (if (and (= (length curAry) 1) (< (elt curAry 0) 128)) (push curAry tmpArys)
+          (push (concatenate 'SIMPLE-VECTOR (inline-encodeLength (length curAry) 128) curAry) tmpArys)))
+
+    (setf tmpArys (reverse tmpArys))
+    (dolist (curAry tmpArys) (incf ttLen (length curAry)))
+    (setf ttLenAry (inline-encodeLength ttLen 192))
+
+    (adjust-array retArray (+ ttLen (length ttLenAry)))
+    (replace retArray ttLenAry :start1 0) (setf ttLen (length ttLenAry))
+    (dolist (curAry tmpArys) (replace retArray curAry :start1 ttLen) (incf ttLen (length curAry)))
+    retArray))
+
+(defun inline-destructure-response (response)
+  (if (stringp response)
+      (cl-json:decode-json-from-string response)
+      (cl-json:decode-json-from-string (flexi-streams:octets-to-string response))))
+
+(defun inline-response-error (response) (cdr (assoc :error response)))
+
+(defun StrIsJson (str) (cl-ppcre::scan-to-strings "{.*}" str))
