@@ -2,5 +2,6 @@
   (:nicknames :cl-web3)
   (:use :common-lisp)
   (:export
-   ;; #:xx
+   #:wtLogInfo
+   #:get-block-number
    ))

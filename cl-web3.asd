@@ -1,3 +1,10 @@
+(defpackage #:web3-system
+  (:use #:cl #:asdf))
+
+(in-package #:web3-system)
+
+(pushnew :cl-web3 *features*)
+
 (asdf:defsystem :cl-web3
   :version "0.1.0"
   :licence "MIT"
@@ -21,7 +28,7 @@
 
 
 
-(asdf:defsystem :cl-web3.test
+(asdf:defsystem :web3-test
   :components ((:module :test
                         :components ((:file "package")
                                      (:file "web3Test"))))

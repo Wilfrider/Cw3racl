@@ -1,4 +1,4 @@
-(in-package :cl-web3)
+(in-package :web3)
 
 (defparameter METHODID-APPROVE (CreateMethodId-n0x "approve(address,uint256)"))
 (defparameter METHODID-BALANCEOF-n0x (CreateMethodId-n0x "balanceOf(address)"))

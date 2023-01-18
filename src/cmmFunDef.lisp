@@ -1,4 +1,4 @@
-(in-package :cl-web3)
+(in-package :web3)
 
 (progn
   (cffi:define-foreign-library libWeb3Ext (:linux "~/DepLib809.so"))
