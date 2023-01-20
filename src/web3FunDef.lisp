@@ -1,6 +1,5 @@
 (in-package :web3)
 
-;; (defmethod make-request ((curObj  ChainPrc) method params)
 (defun make-request (curObj method params)
   (let (orgRet response
                (raw-body (cl-json:encode-json-to-string `(("jsonrpc" . "2.0")
