@@ -2,7 +2,7 @@
 
 (defun make-request (curObj method params)
   (let (orgRet response
-               (raw-body (cl-json:encode-json-to-string `(("jsonrpc" .  "2.0")
+               (raw-body (cl-json:encode-json-to-string `(("jsonrpc" . "2.0")
                                                           ("method" . ,method)
                                                           ("params" . ,params)
                                                           ("id" . ,(ChainId curObj))))))
