@@ -1,4 +1,5 @@
 (in-package :web3-test)
+(use-package  :web3)
 
 (defparameter goerliChainObj (make-instance 'ChainPrc :AccountAddr "50118204D3d095519890ABDB488E634390FcA463" :MultiCallAdr "5BA1e12693Dc8F9c48aAD8770482f4739bEeD696" :ChainId 5
                                             :RpcSvr "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161" :WMainTkName "WETH"
