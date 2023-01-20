@@ -29,7 +29,8 @@
 
 
 (asdf:defsystem :web3-test
-  :components ((:module :test
+  :components ((:static-file "cl-web3.asd")
+               (:module :test
                         :components ((:file "package")
                                      (:file "web3Test"))))
   :depends-on (:rt

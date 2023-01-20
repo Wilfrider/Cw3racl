@@ -3,5 +3,7 @@
   (:use :common-lisp)
   (:export
    #:wtLogInfo
+
+   #:ChainPrc
    #:get-block-number
    ))
