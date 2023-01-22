@@ -22,4 +22,4 @@ MIT.
     popd
 
 ## How to use
-[ref](https://github.com/Wilfrider/cl-web3/example/web3Example.lisp).
+[ref](https://github.com/Wilfrider/cl-web3/blob/main/example/web3Example.lisp).
