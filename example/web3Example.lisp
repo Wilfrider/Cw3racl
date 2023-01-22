@@ -9,6 +9,6 @@
 
 (wtLogInfo "eth_gasPrice:~a" (get-eth-gasPrice goerliChainObj))
 
-(wtLogInfo "getTransactionCount:~a" (getTransactionCount goerliChainObj))
+(wtLogInfo "getTransactionCount:~a" (getTransactionCount  goerliChainObj))
 
 (wtLogInfo "getUserAccountData:~a" (snd1contractCall goerliChainObj (aLndPlAdr goerliChainObj) "getUserAccountData(address)" (list (AccountAddr goerliChainObj))))
