@@ -35,6 +35,16 @@
                                      (:file "web3Test"))))
   :depends-on (:rt
                :cl-web3
+               ))
+
+
+(asdf:defsystem :web3-example
+  :components ((:static-file "cl-web3.asd")
+               (:module :example
+                        :components ((:file "package")
+                                     (:file "web3Example"))))
+  :depends-on (:rt
+               :cl-web3
                :flexi-streams
                :ironclad
                ))

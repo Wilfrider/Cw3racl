@@ -5,5 +5,12 @@
    #:wtLogInfo
 
    #:ChainPrc
+   #:AccountAddr
+   #:aLndPlAdr
+   #:UniswapRouterAdr
+
    #:get-block-number
+   #:get-eth-gasPrice
+   #:getTransactionCount
+   #:snd1contractCall
    ))

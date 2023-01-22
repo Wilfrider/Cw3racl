@@ -21,4 +21,5 @@ MIT.
         bash CreateLib.sh
     popd
 
-## Documentation
+## How to use
+[ref](https://github.com/Wilfrider/cl-web3/example/web3Example.lisp).

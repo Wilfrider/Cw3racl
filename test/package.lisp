@@ -1,4 +1,4 @@
 (defpackage :web3-test
-  (:use :common-lisp :cl-web3))
+  (:use :common-lisp))
 
 (in-package :web3-test)
