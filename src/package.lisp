@@ -13,4 +13,7 @@
    #:get-eth-gasPrice
    #:getTransactionCount
    #:snd1contractCall
+   #:get-aTokenAddr
+   #:getCurtBalance
+   #:getTkCurtBalance
    ))

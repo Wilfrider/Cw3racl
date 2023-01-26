@@ -1,7 +1,7 @@
 # What is cl-web3?
 
 
-cl-web3 is common web3 rpc access client by lisp; Applicable to all evm compatible blockchains.
+cl-web3 is common web3 rpc access client by common-lisp; Applicable to all evm compatible blockchains.
 
 [sourceCode](https://github.com/Wilfrider/cl-web3.git).
 

@@ -12,3 +12,10 @@
 (wtLogInfo "getTransactionCount:~a" (getTransactionCount  goerliChainObj))
 
 (wtLogInfo "getUserAccountData:~a" (snd1contractCall goerliChainObj (aLndPlAdr goerliChainObj) "getUserAccountData(address)" (list (AccountAddr goerliChainObj))))
+
+(defparameter gWethAdr "2e3A2fb8473316A02b8A297B982498E661E1f6f5")
+(wtLogInfo "get-aTokenAddr:~a" (get-aTokenAddr  goerliChainObj gWethAdr))
+
+(wtLogInfo "getCurtBalance:~a" (getCurtBalance  goerliChainObj))
+
+(wtLogInfo "getTkCurtBalance:~a" (getTkCurtBalance  goerliChainObj gWethAdr))
