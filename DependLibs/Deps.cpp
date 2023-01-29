@@ -147,4 +147,32 @@ int curl_Wrap(const char* reqUrl, const char* proxy, int cnTimeout, int tcpNoDel
 
     return FunRet;
 }
+
+#include "./secp256k1_recovery.h"
+
+typedef unsigned char uint8_t;
+char* ECDSA_sign_web3Wrap(const uint8_t* Len32PrvKey, const uint8_t *Len32Hash, uint8_t *Len65SigOut){
+    secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_SIGN);
+
+    secp256k1_nonce_function noncefn = secp256k1_nonce_function_rfc6979;
+
+    secp256k1_ecdsa_recoverable_signature signature;
+    memset(&signature, 0, sizeof(signature));
+
+    if (secp256k1_ecdsa_sign_recoverable(ctx, &signature, Len32Hash, Len32PrvKey, noncefn, NULL) == 0)    {
+        secp256k1_context_destroy(ctx);
+        return "secp256k1_recoverable Fail";
+    }
+
+    int recid = 0;
+    secp256k1_ecdsa_recoverable_signature_serialize_compact(ctx, Len65SigOut, &recid, &signature);
+    secp256k1_context_destroy(ctx);
+    if (recid < 256 ) Len65SigOut[64] = static_cast<uint8_t>(recid);
+    else {
+        return "recidVal over";
+    }
+
+    return NULL;
+}
+
 } //extern "C"

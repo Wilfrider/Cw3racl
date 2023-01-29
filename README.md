@@ -12,9 +12,9 @@ MIT.
 ## History
 
 
-## How to pre config?
+## How to pre config for debian?
 
-    apt-get install libcurl4-gnutls-dev
+    apt install libcurl4-gnutls-dev
 
     git clone -b main --depth 1 https://github.com/Wilfrider/cl-web3.git
     pushd ./DependLibs

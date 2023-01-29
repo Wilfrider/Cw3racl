@@ -65,6 +65,7 @@
   (let ((opData (EncAbiForSnd1contractCall MethodId strOpDataLst)))
     (snd1ContractCallByEncedStr curObj ContractAddr opData blockNum)))
 
+
 (defun get-aTokenAddr (curObj curtkAddr)
   (let ((ContractAddr (snd1contractCall curObj (prtlDtPrvderAddr curObj) METHODID-GETRESERVETOKENSADDRESSES (list curtkAddr))))
     (if (and ContractAddr (> (length ContractAddr) 66))

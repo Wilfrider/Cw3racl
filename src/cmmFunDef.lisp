@@ -11,7 +11,8 @@
     (BodyLen :int))
 
   (cffi:defcfun ("FreeMallocPoint" FreeMallocPoint) :void (pPt :pointer))
-  (cffi:defcfun ("curl_Wrap" curl-Wrap-Impl) :int (reqUrl :pointer) (proxy :pointer) (cnTimeout :int) (tcpNoDelay :int) (pHeaders :pointer) (postFields :pointer) (postLen :int) (pOutStt :pointer)))
+  (cffi:defcfun ("curl_Wrap" curl-Wrap-Impl) :int (reqUrl :pointer) (proxy :pointer) (cnTimeout :int) (tcpNoDelay :int) (pHeaders :pointer) (postFields :pointer) (postLen :int) (pOutStt :pointer))
+  (cffi:defcfun ("ECDSA_sign_web3Wrap" ECDSA-sign) :string (Len32PrvKey :pointer) (Len32Hash :pointer) (Len65SigOut :pointer)))
 
 
 (defmacro with-foreign-arrays (bindings &body body)

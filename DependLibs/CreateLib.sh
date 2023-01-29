@@ -16,7 +16,7 @@ g++ -Wno-deprecated-declarations -O3 -m64 -fPIC -std=c++11 -c Deps.cpp -o /tmp/D
 funShellCmdErrCheck $LINENO 0
 
 
-g++ -shared -o $CS_P /tmp/DepswAFEAd809.o  -lpthread -lz -lm -ldl -lrt  -lcurl
+g++ -shared -o $CS_P /tmp/DepswAFEAd809.o  -L./ -lsecp256k1 -lpthread -lz -lm -ldl -lrt  -lcurl
 funShellCmdErrCheck $LINENO 0
 
 strip --strip-all $CS_P
