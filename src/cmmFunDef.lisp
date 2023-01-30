@@ -12,7 +12,7 @@
 
   (cffi:defcfun ("FreeMallocPoint" FreeMallocPoint) :void (pPt :pointer))
   (cffi:defcfun ("curl_Wrap" curl-Wrap-Impl) :int (reqUrl :pointer) (proxy :pointer) (cnTimeout :int) (tcpNoDelay :int) (pHeaders :pointer) (postFields :pointer) (postLen :int) (pOutStt :pointer))
-  (cffi:defcfun ("ECDSA_sign_web3Wrap" ECDSA-sign) :string (Len32PrvKey :pointer) (Len32Hash :pointer) (Len65SigOut :pointer)))
+  (cffi:defcfun ("ECDSA_sign_web3Wrap" ECDSA-sign-Wrap-Impl) :string (Len32PrvKey :pointer) (Len32Hash :pointer) (Len65SigOut :pointer)))
 
 
 (defmacro with-foreign-arrays (bindings &body body)
@@ -48,7 +48,6 @@
 (defmacro wtLogKey (&body body) `(gvLogOut gLogLevel-Key ,@body))
 (defmacro wtLogWarn (&body body) `(gvLogOut gLogLevel-Warn ,@body))
 (defmacro wtLogErr (&body body) `(gvLogOut gLogLevel-Error ,@body))
-;; (wtLogInfo "this is a test")
 
 
 (defun keccak256Hash (inputAry &key)

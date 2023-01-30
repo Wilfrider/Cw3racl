@@ -40,6 +40,8 @@
 
 (defclass ChainPrc ()
   ((AccountAddr :initarg :AccountAddr :accessor AccountAddr)
+   (PrivateKey :initarg :PrivateKey :accessor PrivateKey)
+
    (MultiCallAdr :initarg :MultiCallAdr :accessor MultiCallAdr)
    (ChainId :initarg :ChainId :accessor ChainId)
    (RpcSvr :initarg :RpcSvr :accessor RpcSvr)
@@ -60,11 +62,3 @@
    :ChainId (error "ChinaId required.")
     :RpcSvr (error "RpcSvr required.")
     :WMainTkName (error "Mainmnyname required.")))
-
-(defmethod initialize-instance :after ((curObj  ChainPrc) &key)
-  (unless (UniswpFctryAdr curObj)
-    (if (UniswapRouterAdr curObj)
-        (let ((ret (snd1contractCall curObj   (UniswapRouterAdr curObj) "factory()")))
-          (if (= (length ret) 66)
-              (setf (UniswpFctryAdr curObj) (subseq ret 26))
-              (format t "get uniFactory err!~a, ~a~%" (LastChainErrInfo curObj) ret))))))

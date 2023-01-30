@@ -1,6 +1,7 @@
 (in-package :web3-example)
 
-(defparameter goerliChainObj (make-instance 'ChainPrc :AccountAddr "50118204D3d095519890ABDB488E634390FcA463" :MultiCallAdr "5BA1e12693Dc8F9c48aAD8770482f4739bEeD696" :ChainId 5
+(defparameter goerliChainObj (make-instance 'ChainPrc :AccountAddr "3382bfe6977E0B1e8AfbC349d7Ee6811C507D1bf" :PrivateKey (ironclad:hex-string-to-byte-array "9248135837d089748b62124b3ffaacc13d1350131c7af0ae95b9df6283a828e0")
+                                            :MultiCallAdr "5BA1e12693Dc8F9c48aAD8770482f4739bEeD696" :ChainId 5
                                             :RpcSvr "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161" :WMainTkName "WETH"
                                             :aLndPlAdr "368EedF3f56ad10b9bC57eed4Dac65B26Bb667f6" :aOracleAdr nil :prtlDtPrvderAddr "9BE876c6DC42215B00d7efe892E2691C3bc35d10" :wethGtWayAdr "d5B55D3Ed89FDa19124ceB5baB620328287b915d"
                                             :UniswapRouterAdr "1b02da8cb0d097eb8d57a175b88c7d8b47997506"))
@@ -19,3 +20,10 @@
 (wtLogInfo "getCurtBalance:~a" (getCurtBalance   goerliChainObj))
 
 (wtLogInfo "getTkCurtBalance:~a" (getTkCurtBalance  goerliChainObj gWethAdr))
+
+(defparameter gToAddr "8118b91E267E1f0A6D793fBa841263BeeA86b16A")
+(wtLogInfo "current account balance:~a before sndval" (getCurtBalance  goerliChainObj))
+(wtLogInfo "from current accountaddr snd 2.1 eth to address:~a returned hash is:~a" gToAddr (sendValue goerliChainObj gToAddr "2.1" 18 240000))
+(wtLogInfo "current account balance:~a after sndval" (getCurtBalance  goerliChainObj))
+
+(wtLogInfo "from current accountaddr APPROVE returned hash is:~a" (snd1contractTrans goerliChainObj gWethAdr METHODID-APPROVE (list (UniswapRouterAdr goerliChainObj) #x1229990) 80000))

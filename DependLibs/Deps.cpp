@@ -161,7 +161,7 @@ char* ECDSA_sign_web3Wrap(const uint8_t* Len32PrvKey, const uint8_t *Len32Hash, 
 
     if (secp256k1_ecdsa_sign_recoverable(ctx, &signature, Len32Hash, Len32PrvKey, noncefn, NULL) == 0)    {
         secp256k1_context_destroy(ctx);
-        return "secp256k1_recoverable Fail";
+        return "secp256k1Recoverable Fail";
     }
 
     int recid = 0;

@@ -9,6 +9,8 @@
    #:aLndPlAdr
    #:UniswapRouterAdr
 
+   #:METHODID-APPROVE
+
    #:get-block-number
    #:get-eth-gasPrice
    #:getTransactionCount
@@ -16,4 +18,5 @@
    #:get-aTokenAddr
    #:getCurtBalance
    #:getTkCurtBalance
-   ))
+   #:sendValue
+   #:snd1contractTrans))
