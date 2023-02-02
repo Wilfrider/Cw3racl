@@ -26,12 +26,16 @@ MIT.
     (ql:quickload "cl-web3")
 
 ## How to usage
-[ref](https://github.com/Wilfrider/cl-web3/blob/main/example/web3Example.lisp).
+-   `get-block-number: get current block number`
+-   `get-gas-price: get current gasPrice`
+-   `get-trans-nones: get current can use nonce`
+-   `send-contract-call: execute a contract function call by eth_call`
+-   `get-atoken-address: get AAVE atoken address by token address`
+-   `get-current-balance: get balance of current account  by account address`
+-   `get-token-current-balance: get a token balance of current account by account address and token address`
+-   `send-eth: send main currency of current account of current chain to a address by sign and eth_sendRawTransaction`
+-   `send-contract-transaction: execute a contract function by sign and eth_sendRawTransaction`
+-   ``
+-   ``
 
-## Implemented JSON-RPC methods
--   `eth_gasPrice`
--   `eth_blockNumber`
--   `eth_getTransactionCount`
--   `eth_call`
--   `eth_getBalance`
--   `eth_sendRawTransaction`
+[Detail ref](https://github.com/Wilfrider/cl-web3/blob/main/example/web3Example.lisp).

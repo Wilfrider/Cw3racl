@@ -3,6 +3,7 @@
   (:use :common-lisp)
   (:export
    #:wtLogInfo
+   #:wtLogWarn
 
    #:ChainPrc
    #:AccountAddr
@@ -12,11 +13,11 @@
    #:METHODID-APPROVE
 
    #:get-block-number
-   #:get-eth-gasPrice
-   #:getTransactionCount
-   #:snd1contractCall
-   #:get-aTokenAddr
-   #:getCurtBalance
-   #:getTkCurtBalance
-   #:sendValue
-   #:snd1contractTrans))
+   #:get-gas-price
+   #:get-trans-nones
+   #:send-contract-call
+   #:get-atoken-address
+   #:get-current-balance
+   #:get-token-current-balance
+   #:send-eth
+   #:send-contract-transaction))

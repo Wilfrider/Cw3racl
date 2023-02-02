@@ -8,22 +8,22 @@
 
 (wtLogInfo "block-number:~a" (get-block-number goerliChainObj))
 
-(wtLogInfo "eth_gasPrice:~a" (get-eth-gasPrice goerliChainObj))
+(wtLogInfo "eth_gasPrice:~a" (get-gas-price goerliChainObj))
 
-(wtLogInfo "getTransactionCount:~a" (getTransactionCount  goerliChainObj))
+(wtLogInfo "getTransactionCount:~a" (get-trans-nones  goerliChainObj))
 
-(wtLogInfo "getUserAccountData:~a" (snd1contractCall goerliChainObj (aLndPlAdr goerliChainObj) "getUserAccountData(address)" (list (AccountAddr goerliChainObj))))
+(wtLogInfo "getUserAccountData:~a" (send-contract-call goerliChainObj (aLndPlAdr goerliChainObj) "getUserAccountData(address)" (list (AccountAddr goerliChainObj))))
 
 (defparameter gWethAdr "2e3A2fb8473316A02b8A297B982498E661E1f6f5")
-(wtLogInfo "get-aTokenAddr:~a" (get-aTokenAddr  goerliChainObj gWethAdr))
+(wtLogInfo "get-atoken-address:~a" (get-atoken-address  goerliChainObj gWethAdr))
 
-(wtLogInfo "getCurtBalance:~a" (getCurtBalance   goerliChainObj))
+(wtLogInfo "getCurtBalance:~a" (get-current-balance   goerliChainObj))
 
-(wtLogInfo "getTkCurtBalance:~a" (getTkCurtBalance  goerliChainObj gWethAdr))
+(wtLogInfo "getTkCurtBalance:~a" (get-token-current-balance  goerliChainObj gWethAdr))
 
 (defparameter gToAddr "8118b91E267E1f0A6D793fBa841263BeeA86b16A")
-(wtLogInfo "current account balance:~a before sndval" (getCurtBalance  goerliChainObj))
-(wtLogInfo "from current accountaddr snd 2.1 eth to address:~a returned hash is:~a" gToAddr (sendValue goerliChainObj gToAddr "2.1" 18 240000))
-(wtLogInfo "current account balance:~a after sndval" (getCurtBalance  goerliChainObj))
+(wtLogInfo "current account balance:~a before sndval" (get-current-balance  goerliChainObj))
+(wtLogInfo "from current accountaddr snd 2.1 eth to address:~a returned hash is:~a" gToAddr (send-eth goerliChainObj gToAddr "2.1" 18 240000))
+(wtLogInfo "current account balance:~a after sndval" (get-current-balance  goerliChainObj))
 
-(wtLogInfo "from current accountaddr APPROVE returned hash is:~a" (snd1contractTrans goerliChainObj gWethAdr METHODID-APPROVE (list (UniswapRouterAdr goerliChainObj) #x1229990) 80000))
+(wtLogInfo "from current accountaddr APPROVE returned hash is:~a" (send-contract-transaction goerliChainObj gWethAdr METHODID-APPROVE (list (UniswapRouterAdr goerliChainObj) #x1229990) 80000))

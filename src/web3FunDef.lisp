@@ -29,18 +29,18 @@
         (progn (wtLogWarn "ChainId:~a getblockNumberErr, ret:~a" (ChainId curObj) curLastBlockNumber) nil) )))
 
 
-(defun get-eth-gasPrice (curObj)
+(defun get-gas-price (curObj)
   (let ((gasPrc (make-request curObj  "eth_gasPrice" (list))))
     (if gasPrc
         (setf gasPrc (floor (* gGasPrcScale (parse-integer (subseq gasPrc 2) :RADIX 16))) (gasPrice curObj) gasPrc)
         (wtLogWarn "get eth gasPrice curObj Err: ~a" (LastChainErrInfo curObj)))
     gasPrc))
 
-(defun getTransactionCount (curObj)
+(defun get-trans-nones (curObj)
   (let ((nonce (make-request curObj  "eth_getTransactionCount" (list (format nil "0x~a" (AccountAddr curObj)) "latest"))))
     (if nonce
         (setf nonce  (parse-integer (subseq nonce 2) :RADIX 16) (swapNonce curObj) nonce)
-        (wtLogWarn "getTransactionCount curObj Err:~a" (LastChainErrInfo curObj)))
+        (wtLogWarn "get-trans-nones Err:~a" (LastChainErrInfo curObj)))
     nonce))
 
 (defun EncAbiForSnd1contractCall (MethodId &optional strOpDataLst)
@@ -59,8 +59,8 @@
   (setf ContractAddr (format nil "0x~a" ContractAddr))
   (make-request curObj  "eth_call" (list  (list (cons "to"  ContractAddr) (cons "data" Enced0xStr)) blockNum)))
 
-(defun snd1contractCall (curObj ContractAddr MethodId &optional strOpDataLst (blockNum "latest"))
-  (unless ContractAddr (return-from snd1contractCall nil))
+(defun send-contract-call (curObj ContractAddr MethodId &optional strOpDataLst (blockNum "latest"))
+  (unless ContractAddr (return-from send-contract-call nil))
 
   (let ((opData (EncAbiForSnd1contractCall MethodId strOpDataLst)))
     (snd1ContractCallByEncedStr curObj ContractAddr opData blockNum)))
@@ -68,21 +68,21 @@
 (defmethod initialize-instance :after ((curObj  ChainPrc) &key)
   (unless (UniswpFctryAdr curObj)
     (if (UniswapRouterAdr curObj)
-        (let ((ret (snd1contractCall curObj   (UniswapRouterAdr curObj) "factory()")))
+        (let ((ret (send-contract-call curObj   (UniswapRouterAdr curObj) "factory()")))
           (if (= (length ret) 66)
               (setf (UniswpFctryAdr curObj) (subseq ret 26))
               (wtLogWarn "get uniFactory err!~a, ~a" (LastChainErrInfo curObj) ret))))))
 
-(defun get-aTokenAddr (curObj curtkAddr)
-  (let ((ContractAddr (snd1contractCall curObj (prtlDtPrvderAddr curObj) METHODID-GETRESERVETOKENSADDRESSES (list curtkAddr))))
+(defun get-atoken-address (curObj curtkAddr)
+  (let ((ContractAddr (send-contract-call curObj (prtlDtPrvderAddr curObj) METHODID-GETRESERVETOKENSADDRESSES (list curtkAddr))))
     (if (and ContractAddr (> (length ContractAddr) 66))
         (progn (setf ContractAddr (subseq ContractAddr 26 66))
                (if (> (length (string-left-trim "0" ContractAddr)) 0)
-                   (return-from get-aTokenAddr ContractAddr)))))
-  (wtLogWarn "get-aTokenAddr:~a, err:~a" curtkAddr (LastChainErrInfo curObj))
+                   (return-from get-atoken-address ContractAddr)))))
+  (wtLogWarn "get-atoken-address:~a, err:~a" curtkAddr (LastChainErrInfo curObj))
   nil)
 
-(defun getCurtBalance (curObj &optional (OwnAdr nil) (blockNum "latest"))
+(defun get-current-balance (curObj &optional (OwnAdr nil) (blockNum "latest"))
   (let (retBln)
     (unless OwnAdr (setf OwnAdr (AccountAddr curObj)))
     (when (numberp blockNum) (setf blockNum (format nil "0x~x" blockNum)))
@@ -92,16 +92,16 @@
         (progn (wtLogWarn "ChainId:~a, get-balance OwnAddr:~a  Err, retBln:~a, ErrInfo:~a" (ChainId curObj) OwnAdr retBln (LastChainErrInfo curObj)) (setf retBln nil)))
     retBln))
 
-(defun getTkCurtBalance (curObj ContractAdr &key (OwnAddr nil) (blockNum "latest"))
+(defun get-token-current-balance (curObj ContractAdr &key (OwnAddr nil) (blockNum "latest"))
   (let* (retBln)
     (unless OwnAddr (setf OwnAddr (AccountAddr curObj)))
-    (setf retBln (snd1contractCall curObj ContractAdr METHODID-BALANCEOF (list OwnAddr) blockNum))
+    (setf retBln (send-contract-call curObj ContractAdr METHODID-BALANCEOF (list OwnAddr) blockNum))
     (if (and retBln (> (length retBln) 2))
-        (return-from getTkCurtBalance (parse-integer (subseq retBln 2) :RADIX 16)))
+        (return-from get-token-current-balance (parse-integer (subseq retBln 2) :RADIX 16)))
 
     (setf blockNum (LastChainErrInfo curObj))
     (if (> (length blockNum) 50) (setf blockNum (concatenate 'string (subseq blockNum 0 50) "...")))
-    (wtLogWarn "ChainId:~a, OwnAddr:~a, getTkCurtBalanceErr:~a, retBln:~a, ContractAddr:~a" (ChainId curObj) OwnAddr blockNum retBln ContractAdr))
+    (wtLogWarn "ChainId:~a, OwnAddr:~a, get-token-current-balanceErr:~a, retBln:~a, ContractAddr:~a" (ChainId curObj) OwnAddr blockNum retBln ContractAdr))
   nil)
 
 (defun secp256k1-sign (curObj toAddr sndVal sndValDcmls maxGasLimint &key (dataAry #()))
@@ -116,11 +116,11 @@
 
     (unless prk (wtLogWarn "PrivateKeyNotSet") (return-from secp256k1-sign nil))
 
-    (setf gasPrcAry (get-eth-gasPrice curObj))
+    (setf gasPrcAry (get-gas-price curObj))
     (unless gasPrcAry (return-from secp256k1-sign nil))
     (setf gasPrcAry (ironclad:integer-to-octets gasPrcAry))
 
-    (setf nonceAry (getTransactionCount curObj))
+    (setf nonceAry (get-trans-nones curObj))
     (unless nonceAry (return-from secp256k1-sign nil))
     (setf nonceAry (ironclad:integer-to-octets  nonceAry))
 
@@ -160,7 +160,7 @@
         (setf dataAry paramsAryLst))
     (secp256k1-sign curObj contractAddr sndEthStrVal sndValDcmls maxGasLimint :dataAry dataAry)))
 
-(defun sendValue (curObj toAddr strSndVal sndValDcmls maxGasLimint &key (contractAddr nil))
+(defun send-eth (curObj toAddr strSndVal sndValDcmls maxGasLimint &key (contractAddr nil))
   (let (sndStr)
     (if contractAddr
         (setf sndStr (sign-contract-1WaitRunmethod curObj
@@ -170,11 +170,11 @@
         (progn
           (setf contractAddrOrName (subseq (WMainTkName curObj) 1))
           (setf sndStr (secp256k1-sign curObj toAddr strSndVal sndValDcmls  maxGasLimint))))
-    (unless sndStr (return-from sendValue nil))
+    (unless sndStr (return-from send-eth nil))
     (make-request curObj  "eth_sendRawTransaction" (list sndStr))))
 
-(defun snd1contractTrans (curObj contractAddr strMethodId opDataAryLst maxGasLimint)
+(defun send-contract-transaction (curObj contractAddr strMethodId opDataAryLst maxGasLimint)
   (let ((sndStr (sign-contract-1WaitRunmethod curObj contractAddr strMethodId
                                               opDataAryLst nil maxGasLimint)))
-    (unless sndStr (return-from snd1contractTrans nil))
+    (unless sndStr (return-from send-contract-transaction nil))
     (make-request curObj  "eth_sendRawTransaction" (list sndStr))))
