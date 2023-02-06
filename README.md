@@ -30,12 +30,19 @@ MIT.
 -   `get-gas-price: get current gasPrice`
 -   `get-trans-nones: get current can use nonce`
 -   `send-contract-call: execute a contract function call by eth_call`
--   `get-atoken-address: get AAVE atoken address by token address`
 -   `get-current-balance: get balance of current account  by account address`
 -   `get-token-current-balance: get a token balance of current account by account address and token address`
 -   `send-eth: send main currency of current account of current chain to a address by sign and eth_sendRawTransaction`
 -   `send-contract-transaction: execute a contract function by sign and eth_sendRawTransaction`
+-   `get-atoken-address: get the AAVE atoken address by a token address`
+-   `aave-deposit-token: deposit amount of a token for AAVE to get interest`
+-   `aave-get-token-deposited-amount: get current account deposited amount of a token at AAVE`
+-   `aave-withdraw-token: withdraw amount of a token from AAVE`
 -   ``
 -   ``
 
 [Detail ref](https://github.com/Wilfrider/cl-web3/blob/main/example/web3Example.lisp).
+
+## Wait todo
+-   `validate transaction status`
+-   ``

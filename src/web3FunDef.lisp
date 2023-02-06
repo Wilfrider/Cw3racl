@@ -73,15 +73,6 @@
               (setf (UniswpFctryAdr curObj) (subseq ret 26))
               (wtLogWarn "get uniFactory err!~a, ~a" (LastChainErrInfo curObj) ret))))))
 
-(defun get-atoken-address (curObj curtkAddr)
-  (let ((ContractAddr (send-contract-call curObj (prtlDtPrvderAddr curObj) METHODID-GETRESERVETOKENSADDRESSES (list curtkAddr))))
-    (if (and ContractAddr (> (length ContractAddr) 66))
-        (progn (setf ContractAddr (subseq ContractAddr 26 66))
-               (if (> (length (string-left-trim "0" ContractAddr)) 0)
-                   (return-from get-atoken-address ContractAddr)))))
-  (wtLogWarn "get-atoken-address:~a, err:~a" curtkAddr (LastChainErrInfo curObj))
-  nil)
-
 (defun get-current-balance (curObj &optional (OwnAdr nil) (blockNum "latest"))
   (let (retBln)
     (unless OwnAdr (setf OwnAdr (AccountAddr curObj)))
@@ -178,3 +169,43 @@
                                               opDataAryLst nil maxGasLimint)))
     (unless sndStr (return-from send-contract-transaction nil))
     (make-request curObj  "eth_sendRawTransaction" (list sndStr))))
+
+
+(defun get-atoken-address (curObj curtkAddr)
+  (let ((ContractAddr (send-contract-call curObj (prtlDtPrvderAddr curObj) METHODID-GETRESERVETOKENSADDRESSES (list curtkAddr))))
+    (if (and ContractAddr (> (length ContractAddr) 66))
+        (progn (setf ContractAddr (subseq ContractAddr 26 66))
+               (if (> (length (string-left-trim "0" ContractAddr)) 0)
+                   (return-from get-atoken-address ContractAddr)))))
+  (wtLogWarn "get-atoken-address:~a, err:~a" curtkAddr (LastChainErrInfo curObj))
+  nil)
+
+(defun aave-deposit-token (curObj tokenContractAddr strDpstAmount decimals)
+  (let (ApprTknVal retHash)
+
+    (setf ApprTknVal (inline-ConvertSndValToVector strDpstAmount decimals))
+
+    (setf retHash (send-contract-transaction curObj tokenContractAddr METHODID-APPROVE (list (ironclad:hex-string-to-byte-array (aLndPlAdr curObj)) ApprTknVal) APPROVE-GASLIMINT))
+
+    (if retHash
+        (send-contract-transaction curObj (aLndPlAdr curObj) METHODID-DEPOSIT (list (ironclad:hex-string-to-byte-array tokenContractAddr) ApprTknVal
+                                                                                    (ironclad:hex-string-to-byte-array (AccountAddr curObj)) (ironclad:integer-to-octets 0)) 900000)
+        (wtLogWarn "METHODID-APPROVE err, lastErr:~a" (LastChainErrInfo curObj)))))
+
+
+(defun aave-get-token-deposited-amount (curObj tokenContractAddr) ;; 取得当前用户的储备值(包含利息) (aaveGetDepositVal gkovanChinaPrcObj "USDT")
+  (let (atokenAdr)
+
+    (setf atokenAdr (get-atoken-address curObj  tokenContractAddr))
+
+    (if atokenAdr
+        (get-token-current-balance curObj atokenAdr)
+        (wtLogWarn "get ~a A-tokenAddr Fail:~a" tokenContractAddr (LastChainErrInfo curObj)))))
+
+(defun aave-withdraw-token (curObj tokenContractAddr strWthdAmount decimals)
+  (let (TknWthdrVal)
+
+    (setf TknWthdrVal (inline-ConvertSndValToVector strWthdAmount decimals))
+
+    (send-contract-transaction curObj (aLndPlAdr curObj) METHODID-WITHDRAW (list (ironclad:hex-string-to-byte-array  tokenContractAddr) TknWthdrVal
+                                                                                 (ironclad:hex-string-to-byte-array (AccountAddr curObj))) 900000)))

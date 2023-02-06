@@ -16,8 +16,12 @@
    #:get-gas-price
    #:get-trans-nones
    #:send-contract-call
-   #:get-atoken-address
    #:get-current-balance
    #:get-token-current-balance
    #:send-eth
-   #:send-contract-transaction))
+   #:send-contract-transaction
+   #:get-atoken-address
+   #:aave-deposit-token
+   #:aave-get-token-deposited-amount
+   #:aave-withdraw-token
+   ))
