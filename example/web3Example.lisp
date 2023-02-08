@@ -37,3 +37,7 @@
 (wtLogInfo "get current account deposited amount of weth at AAVE  is:~a" (aave-get-token-deposited-amount  goerliChainObj gWethAdr))
 
 (wtLogInfo "withdraw 1.3 weth from AAVE returned hash is:~a" (aave-withdraw-token  goerliChainObj gWethAdr "1.3" 18))
+
+(defparameter gUniAdr "8118b91E267E1f0A6D793fBa831263BeeA86b16A")
+
+(wtLogInfo "swap-native-token-to-other-token-by-uniswapv2 returned hash is:~a" (swap-native-token-to-other-token-by-uniswapv2 goerliChainObj "1" 18 (list gWethAdr gUniAdr) "5.5" 18))

@@ -164,9 +164,9 @@
     (unless sndStr (return-from send-eth nil))
     (make-request curObj  "eth_sendRawTransaction" (list sndStr))))
 
-(defun send-contract-transaction (curObj contractAddr strMethodId opDataAryLst maxGasLimint)
+(defun send-contract-transaction (curObj contractAddr strMethodId opDataAryLst maxGasLimint  &key (sndEthStrVal nil) (sndValDcmls nil))
   (let ((sndStr (sign-contract-1WaitRunmethod curObj contractAddr strMethodId
-                                              opDataAryLst nil maxGasLimint)))
+                                              opDataAryLst sndValDcmls maxGasLimint :sndEthStrVal sndEthStrVal)))
     (unless sndStr (return-from send-contract-transaction nil))
     (make-request curObj  "eth_sendRawTransaction" (list sndStr))))
 
@@ -209,3 +209,56 @@
 
     (send-contract-transaction curObj (aLndPlAdr curObj) METHODID-WITHDRAW (list (ironclad:hex-string-to-byte-array  tokenContractAddr) TknWthdrVal
                                                                                  (ironclad:hex-string-to-byte-array (AccountAddr curObj))) 900000)))
+
+(defun getAmountsOut (curObj amountIn pathLst)
+  (let ((dataLst (list (ironclad:byte-array-to-hex-string (ironclad:integer-to-octets amountIn))
+                       (ironclad:byte-array-to-hex-string (ironclad:integer-to-octets (* 2 32)))
+                       (ironclad:byte-array-to-hex-string (ironclad:integer-to-octets (length pathLst)))))
+        retVals)
+
+    (setf dataLst (concatenate 'list dataLst pathLst))
+    (setf retVals (send-contract-call curObj (UniswapRouterAdr curObj) METHODID-UNISWAP-GETAMOUNTSOUT dataLst))
+
+    (when retVals
+      (setf retVals (subseq retVals (+ 2 (* (+ 1 (length pathLst)) 64))))
+      (setf retVals (parse-integer retVals :RADIX 16)))
+
+    retVals))
+
+(defparameter GMOTHEDID-GETCURBLOCKTIMESTAMP (CreateMethodId "getCurrentBlockTimestamp()"))
+
+(defun getLastBlockTimestamp (curObj)
+  (let ((curBlkTimestmp (send-contract-call curObj (MultiCallAdr curObj) GMOTHEDID-GETCURBLOCKTIMESTAMP)))
+
+    (if curBlkTimestmp
+        (+ (parse-integer (subseq curBlkTimestmp 2) :RADIX 16) gContractTrantTimeout)
+
+        (progn (wtLogWarn "getLastBlockTimestampErr, ChainErrInfo:~a" (LastChainErrInfo curObj))
+               (return-from getLastBlockTimestamp nil)))))
+
+(defparameter METHODID-UNISWAP-swapExactETHForTokens (CreateMethodId-n0x "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)"))
+
+(defun swap-native-token-to-other-token-by-uniswapv2 (curObj strInputCnt inDecimal pathAddrLst strRequMinOut outDecimal)
+  (let ((inputAmount (inline-ConvertSndValToVector strInputCnt inDecimal)) (RequMinOutAmount (inline-ConvertSndValToVector strRequMinOut outDecimal))
+        (lastBlockTime (getLastBlockTimestamp curObj))
+        realAmountOut)
+
+    (unless lastBlockTime (return-from swap-native-token-to-other-token-by-uniswapv2 nil))
+
+    (setf realAmountOut (getAmountsOut curObj inputAmount pathAddrLst))
+    (unless realAmountOut
+      (wtLogWarn "getAmountsOutErr, ChainErrInfo:~a" (LastChainErrInfo curObj))
+      (return-from swap-native-token-to-other-token-by-uniswapv2 nil))
+
+    (when (< realAmountOut RequMinOutAmount)
+      (wtLogWarn "can't execute the swap realamountout(~a) < requminoutamount(~a)" realAmountOut RequMinOutAmount)
+      (return-from swap-native-token-to-other-token-by-uniswapv2 nil))
+
+
+    (send-contract-transaction curObj (UniswapRouterAdr curObj) METHODID-UNISWAP-swapExactETHForTokens
+                               (concatenate 'list
+                                            (list (ironclad:integer-to-octets realAmountOut) (ironclad:integer-to-octets (* 4 #x20))
+                                                  (ironclad:hex-string-to-byte-array  (AccountAddr curObj)) (ironclad:integer-to-octets lastBlockTime)
+                                                  (ironclad:integer-to-octets (length pathAddrLst)))
+                                            (map 'list #'(lambda (curAddr) (ironclad:hex-string-to-byte-array  curAddr)) pathAddrLst))
+                               900000 :sndEthStrVal strInputCnt :sndValDcmls inDecimal)))
