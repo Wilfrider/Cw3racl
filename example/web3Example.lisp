@@ -41,3 +41,9 @@
 (defparameter gUniAdr "8118b91E267E1f0A6D793fBa831263BeeA86b16A")
 
 (wtLogInfo "swap-native-token-to-other-token-by-uniswapv2 returned hash is:~a" (swap-native-token-to-other-token-by-uniswapv2 goerliChainObj "1" 18 (list gWethAdr gUniAdr) "5.5" 18))
+
+(wtLogInfo "swap-1Token-to-native-token-by-uniswapv2 returned hash is:~a" (swap-1Token-to-native-token-by-uniswapv2 goerliChainObj "1" 18 (list gUniAdr gWethAdr) "5.5" 18))
+
+(defparameter gLinkAdr "9918b91E267E1f0A6D793fBa831263BeeA86b16A")
+
+(wtLogInfo "swap-1Token-to-other-token-by-uniswapv2 returned hash is:~a" (swap-1Token-to-other-token-by-uniswapv2 goerliChainObj "1" 18 (list gLinkAdr gUniAdr) "5.5" 18))

@@ -39,6 +39,9 @@ MIT.
 -   `aave-get-token-deposited-amount: get current account deposited amount of a token at AAVE`
 -   `aave-withdraw-token: withdraw amount of a token from AAVE`
 -   `swap-native-token-to-other-token-by-uniswapv2: mean as the name`
+-   `swap-1Token-to-native-token-by-uniswapv2: mean as the name`
+-   `swap-1Token-to-other-token-by-uniswapv2: mean as the name`
+-   ``
 -   ``
 
 [Detail ref](https://github.com/Wilfrider/cl-web3/blob/main/example/web3Example.lisp).

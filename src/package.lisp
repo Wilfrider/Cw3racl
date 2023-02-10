@@ -25,4 +25,6 @@
    #:aave-get-token-deposited-amount
    #:aave-withdraw-token
    #:swap-native-token-to-other-token-by-uniswapv2
+   #:swap-1Token-to-native-token-by-uniswapv2
+   #:swap-1Token-to-other-token-by-uniswapv2
    ))

@@ -257,8 +257,47 @@
 
     (send-contract-transaction curObj (UniswapRouterAdr curObj) METHODID-UNISWAP-swapExactETHForTokens
                                (concatenate 'list
-                                            (list (ironclad:integer-to-octets realAmountOut) (ironclad:integer-to-octets (* 4 #x20))
+                                            (list (ironclad:integer-to-octets RequMinOutAmount) (ironclad:integer-to-octets (* 4 #x20))
                                                   (ironclad:hex-string-to-byte-array  (AccountAddr curObj)) (ironclad:integer-to-octets lastBlockTime)
                                                   (ironclad:integer-to-octets (length pathAddrLst)))
                                             (map 'list #'(lambda (curAddr) (ironclad:hex-string-to-byte-array  curAddr)) pathAddrLst))
                                900000 :sndEthStrVal strInputCnt :sndValDcmls inDecimal)))
+
+(defun swap-1Token-to-other-by-uniswapv2 (curObj strInputCnt inDecimal pathAddrLst strRequMinOut outDecimal swapFun)
+  (let ((inputAmount (inline-ConvertSndValToVector strInputCnt inDecimal)) (RequMinOutAmount (inline-ConvertSndValToVector strRequMinOut outDecimal))
+        (lastBlockTime (getLastBlockTimestamp curObj))
+        realAmountOut retHash)
+
+    (unless lastBlockTime (return-from swap-1Token-to-other-by-uniswapv2 nil))
+
+    (setf realAmountOut (getAmountsOut curObj inputAmount pathAddrLst))
+    (unless realAmountOut
+      (wtLogWarn "getAmountsOutErr, ChainErrInfo:~a" (LastChainErrInfo curObj))
+      (return-from swap-1Token-to-other-by-uniswapv2 nil))
+
+    (when (< realAmountOut RequMinOutAmount)
+      (wtLogWarn "can't execute the swap realamountout(~a) < requminoutamount(~a)" realAmountOut RequMinOutAmount)
+      (return-from swap-1Token-to-other-by-uniswapv2 nil))
+
+
+    (setf retHash (send-contract-transaction curObj (car pathAddrLst) METHODID-APPROVE (list (ironclad:hex-string-to-byte-array (UniswapRouterAdr curObj)) inputAmount) APPROVE-GASLIMINT))
+
+    (if retHash
+        (send-contract-transaction curObj (UniswapRouterAdr curObj) swapFun
+                                   (concatenate 'list
+                                                (list (ironclad:integer-to-octets inputAmount) (ironclad:integer-to-octets RequMinOutAmount) (ironclad:integer-to-octets #xa0)
+                                                      (ironclad:hex-string-to-byte-array  (AccountAddr curObj)) (ironclad:integer-to-octets lastBlockTime) (ironclad:integer-to-octets  pathAddrLst))
+                                                (map 'list #'(lambda (curAddr) (ironclad:hex-string-to-byte-array  curAddr)) pathAddrLst))
+                                   900000)
+        (wtLogWarn "METHODID-APPROVE err for Uinswap, lastErr:~a" (LastChainErrInfo curObj)))))
+
+
+(defparameter METHODID-UNISWAP-swapExactTokensForETH (CreateMethodId-n0x "swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)"))
+
+(defun swap-1Token-to-native-token-by-uniswapv2 (curObj strInputCnt inDecimal pathAddrLst strRequMinOut outDecimal)
+  (swap-1Token-to-other-by-uniswapv2 curObj strInputCnt inDecimal pathAddrLst strRequMinOut outDecimal METHODID-UNISWAP-swapExactTokensForETH))
+
+(defparameter METHODID-UNISWAP-swapExactTokensForTokens (CreateMethodId-n0x "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)"))
+
+(defun swap-1Token-to-other-token-by-uniswapv2 (curObj strInputCnt inDecimal pathAddrLst strRequMinOut outDecimal)
+  (swap-1Token-to-other-by-uniswapv2 curObj strInputCnt inDecimal pathAddrLst strRequMinOut outDecimal METHODID-UNISWAP-swapExactTokensForTokens))
