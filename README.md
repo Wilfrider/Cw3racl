@@ -1,7 +1,6 @@
 # What is cl-web3?
 
-
-cl-web3 is general web3 rpc access client by common lisp; Applicable to all evm compatible blockchains.
+cl-web3 is general web3 client for rpc api by common lisp; Applicable to all evm compatible blockchains.
 
 [sourceCode](https://github.com/Wilfrider/cl-web3.git).
 
@@ -26,6 +25,7 @@ MIT.
     (ql:quickload "cl-web3")
 
 ## How to usage
+
 -   `get-block-number: get current block number`
 -   `get-gas-price: get current gasPrice`
 -   `get-trans-nones: get current can use nonce`
@@ -41,11 +41,10 @@ MIT.
 -   `swap-native-token-to-other-token-by-uniswapv2: mean as the name`
 -   `swap-1Token-to-native-token-by-uniswapv2: mean as the name`
 -   `swap-1Token-to-other-token-by-uniswapv2: mean as the name`
--   ``
--   ``
 
-[Detail ref](https://github.com/Wilfrider/cl-web3/blob/main/example/web3Example.lisp).
+[Detail reference](https://github.com/Wilfrider/cl-web3/blob/main/example/web3Example.lisp).
 
 ## Wait todo
+
 -   `validate transaction status`
 -   `eth_getLogs`
