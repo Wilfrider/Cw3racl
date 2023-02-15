@@ -48,3 +48,4 @@ MIT.
 
 -   `validate transaction status`
 -   `eth_getLogs`
+-   `multicall`
